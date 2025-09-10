@@ -10,34 +10,39 @@ def arithmetic_arranger(problems, show_answers=False):
 
     for problem in problems:
         elements = problem.split()
-        first_number = elements[0]
-        operator = elements[1]
-        second_number = elements[2]
-        
-        # Check operator is '+' or '-'
+        first_number, operator, second_number = elements
+     
+        # Validate operator
         if operator not in ['+', '-']:
             return "Error: Operator must be '+' or '-'."
-        # Check number should only contain digits
-        elif not first_number.isdigit() or not second_number.isdigit():
+        # Validate digits
+        if not first_number.isdigit() or not second_number.isdigit():
             return "Error: Numbers must only contain digits."
-        elif len(first_number) > 4 or len(second_number) > 4:
+        # Validate number length
+        if len(first_number) > 4 or len(second_number) > 4:
             return "Error: Numbers cannot be more than four digits."
         
-        max_length_operand = max(len(first_number), len(second_number))
-        print(max_length_operand)
+        # Get width (max length of operands + 2 for operator and space)
+        max_length = max(len(first_number), len(second_number)) + 2
 
-        if(len(first_number) > len(second_number)):
-            longest_width = len(first_number)
-            first_line.append(f'  {first_number}')
-            print(longest_width)
-            print(len(second_number))
-            second_line.append(operator + " " * (longest_width) + second_number) 
-            print(first_line)
-            print(second_line)
-    return '\n'.join(first_line) + '\n' + '\n'.join(second_line) + '\n' + '\n'.join(dashes_line) + '\n' + '\n'.join(answers_line)
+        # Format each line
+        first_line.append(f'{first_number:>{max_length}}')
+        second_line.append(f'{operator} {second_number:>{max_length-2}}')
+        dashes_line.append('-' * max_length)
 
-#print(f'\n{arithmetic_arranger(["32 + 698", "3801 - 2", "45 + 43", "123 + 49"])}')
-print(f'\n{arithmetic_arranger(["3801 - 2", "123 + 49"])}')
-print('  3801      123\n-    2    +  49\n------    -----')
+        # Calculate and format answer if show_answers is True
+        if show_answers:
+            if operator == '+':
+                result = int(first_number) + int(second_number)
+            else:
+                result = int(first_number) - int(second_number)
+            answers_line.append(f'{result:>{max_length}}')
 
+    # Join lines with 4 spaces between problems    
+    result = '    '.join(first_line) + '\n' + '    '.join(second_line) +'\n' + '    '.join(dashes_line)
+    if show_answers:
+        result += '\n' + '    '.join(answers_line)
 
+    return result
+
+print(arithmetic_arranger(["32 + 8", "1 - 3801", "9999 + 9999", "523 - 49"], True))
